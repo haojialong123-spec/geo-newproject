@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, FileText, Settings, UserCircle, HardHat, Book, ChevronRight, ChevronLeft } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, UserCircle, HardHat, Book, ChevronRight, ChevronLeft, Scale } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => 
       case 'templates': return '建工场景模型库';
       case 'generator': return '智能内容生成';
       case 'knowledge': return '律所品牌资产 (GEO)';
+      case 'factAnalysis': return '建工案件事实梳理';
       default: return '工作台';
     }
   };
@@ -89,6 +90,13 @@ const Layout: React.FC<LayoutProps> = ({ children, activeView, onNavigate }) => 
             )}
           </div>
 
+          <NavItem
+            icon={<Scale size={20} />}
+            label="事实梳理"
+            isActive={activeView === 'factAnalysis'}
+            onClick={() => onNavigate('factAnalysis')}
+            isCollapsed={isCollapsed}
+          />
           <NavItem
             icon={<FileText size={20} />}
             label="场景模型库"

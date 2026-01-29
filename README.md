@@ -1,20 +1,90 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+  <h1>北京建工法律咨询 GEO 营销系统 v1.1</h1>
+  <p><strong>智能提取案源痛点 · 自动生成营销内容 · AI 事实梳理引擎</strong></p>
 </div>
 
-# Run and deploy your AI Studio app
+---
 
-This contains everything you need to run your app locally.
+## 📅 版本信息
+- **版本号**: 1.1.0 (Development)
+- **发布日期**: 2026-01-29
+- **状态**: 开发版 (Dev)
 
-View your app in AI Studio: https://ai.studio/apps/drive/1MIXfZFgetEDqtU0EqYKkLHcn7-OxNnZB
+## 🚀 项目简介
+本项目是一个专为北京建工领域律师团队打造的智能营销辅助系统。它通过深度解析案源录音或文本，自动提取法律关键痛点，并结合“老张”人设与北京本地化（GEO）策略，一键生成高质量的公众号文章、视频脚本及知乎回答，助力律师团队在本地搜索中占据优势。
 
-## Run Locally
+## ✨ 核心功能 (v1.0)
 
-**Prerequisites:**  Node.js
+### 1. 深度案源分析
+- **智能痛点提取**: 自动识别录音/文本中的法律纠纷核心（如“挂靠经营”、“工程款拖欠”）。
+- **案源分级**: 根据案情紧急程度和价值自动评级。
+- **证据链预判**: 初步分析现有证据的强弱。
 
+### 2. 多维度内容生成
+- **深度公众号文章**: 专业、权威，包含法律法条引用与案例分析。
+- **抖音/视频号脚本**: 口语化、强互动的短视频文案，内置分镜提示。
+- **知乎/问答逻辑**: 逻辑严密的问题解答，建立专业形象。
+- **“去 AI 味”老张风格**: 模拟资深律师口吻，接地气、有人情味。
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 3. 可视化与配图
+- **Mermaid 逻辑导图**: 自动生成案件法律关系图，清晰展示复杂案情。
+- **AI 智能配图**: 根据文章内容自动生成符合“建工”、“法律”调性的封面图。
+
+### 4. 🆕 建工案件事实梳理引擎 (LegalFactAI)
+- **证据文档上传**: 支持PDF、图片、Word格式的合同、补充协议、转账凭证。
+- **效力金字塔**: AI 自动识别多文件间的约束关系，以最新签署的合同为准。
+- **履约闭环核对**: 对比合同约定与转账记录，自动判断履约状态。
+- **违约点狙击**: 识别合同中的多重触发条件，捕获对方违约事实。
+- **4阶段处理流程**: 证据摄入 → 智能提取 → 法律推理 → 报告生成。
+- **Word 导出**: 一键导出《法律事实梳理意见书》文档。
+
+### 5. 极致体验优化
+- **无抖动 UI**: 经过多次优化的加载逻辑，消除布局偏移 (CLS)。
+- **实时反馈**: 动态展示生成进度与状态。
+
+## 🛠️ 技术栈
+- **前端**: React 18, Vite, TypeScript, Tailwind CSS
+- **AI 模型**: Gemini 3 Pro (High/Flash), Nano Banana Pro (图像)
+- **可视化**: Mermaid.js
+- **部署**: Tencent EdgeOne Pages
+
+## 📦 快速开始
+
+### 本地运行
+1. 安装依赖:
+   ```bash
+   npm install
+   ```
+2. 配置环境变量 (`.env.local`):
+   ```env
+   VITE_GEMINI_API_KEY=your_key_here
+   VITE_ANTIGRAVITY_BASE_URL=http://127.0.0.1:8045
+   ```
+3. 启动开发服务器:
+   ```bash
+   npm run dev
+   ```
+
+### 部署 (EdgeOne)
+```bash
+npm run build
+npx edgeone pages deploy ./build
+```
+
+## 📝 变更日志
+
+### v1.1.0 (2026-01-29)
+- [New] 新增「建工案件事实梳理引擎」(LegalFactAI) 模块
+- [New] 支持多文档上传（PDF/图片/Word）并自动提取关键信息
+- [New] AI 证据链推理，自动构建效力金字塔与资金闭环
+- [New] 生成专业级《法律事实梳理意见书》并支持 Word 导出
+- [New] 可视化关键事件时间轴
+
+### v1.0.0 (2026-01-29)
+- [New] 完整的建工法律痛点库 (100+ 细分痛点)
+- [Fix] 修复了思维导图组件的无限重渲染抖动问题 (Critical)
+- [Fix] 解决了线上环境与本地模型名称不一致的 Bug
+- [Opt] 优化了 GEO 关键词注入策略 (北京朝阳/海淀等)
+
+---
+© 2026 AI-Legal-Geo-System. All Rights Reserved.

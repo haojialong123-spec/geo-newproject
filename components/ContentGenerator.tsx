@@ -82,10 +82,9 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({ record, onBack }) =
       // Only generate images if we are in Article mode and have content
       if (activeTab === ContentType.ARTICLE && result) {
         // Reset previous images if any (or keep them? usually new content means new images)
-        // let's keep them if they exist, or clear them? User might want to "Regenerate".
         // Let's clear to ensure relevance.
         setAssets([]);
-        setIsGeneratingImages(true);
+        setIsGeneratingImages(true); // START LOADING IMMEDIATELY to reserve space
 
         generateImagePrompts(result, marketingDir)
           .then(async (prompts) => {
@@ -181,14 +180,12 @@ const ContentGenerator: React.FC<ContentGeneratorProps> = ({ record, onBack }) =
 
   const handleSvgUpdate = useCallback((idx: number, svg: string) => {
     setAssets(prev => {
-      const newAssets = [...prev];
-      if (newAssets[idx]) {
-        // Only update if svg content is different (though usually it is, this prevents loops if we didn't have useCallback and random IDs)
-        // Actually, with useCallback, we prevent the useEffect from firing again.
-        if (newAssets[idx].svgContent !== svg) {
-          newAssets[idx] = { ...newAssets[idx], svgContent: svg };
-        }
+      // CRITICAL: Return SAME reference if no change to prevent re-render cascade
+      if (!prev[idx] || prev[idx].svgContent === svg) {
+        return prev;
       }
+      const newAssets = [...prev];
+      newAssets[idx] = { ...newAssets[idx], svgContent: svg };
       return newAssets;
     });
   }, []);

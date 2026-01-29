@@ -5,14 +5,53 @@ import Dashboard from './components/Dashboard';
 import ContentGenerator from './components/ContentGenerator';
 import TemplateLibrary from './components/TemplateLibrary';
 import KnowledgeBaseView from './components/KnowledgeBaseView';
+import FactAnalysisWorkspaceV2 from './components/FactAnalysisWorkspaceV2';
 import { AnalysisRecord, ViewState, ExtractionResult, LegalScenario } from './types';
 import { INITIAL_LEGAL_SCENARIOS } from './constants';
 import { extractPainPoints } from './services/geminiService';
 
 const App: React.FC = () => {
-  const [activeView, setActiveView] = useState<ViewState>('dashboard');
-  const [records, setRecords] = useState<AnalysisRecord[]>([]);
-  const [selectedRecord, setSelectedRecord] = useState<AnalysisRecord | null>(null);
+  // TEST DATA
+  const DUMMY_RECORD: AnalysisRecord = {
+    id: 'test-1',
+    fileName: 'test.docx',
+    uploadDate: '12:00:00',
+    status: 'completed',
+    rawText: '这是一个关于建设工程施工合同纠纷的案子，主要是甲方拖欠工程款，并且以工期延误为由拒绝支付进度款。',
+    result: {
+      case_type: '建设工程施工合同纠纷',
+      detected_issues: [
+        { tag_id: 't1', tag_name: '拖欠工程款', original_text: '甲方拖欠工程款', confidence: "High" },
+        { tag_id: 't2', tag_name: '工期延误', original_text: '以工期延误为由拒绝支付', confidence: "High" }
+      ],
+      problem_summary: '施工方遭遇甲方拖欠款项，存在工期争议。',
+      marketing_direction: '重点突出施工方维权策略，强调先发制人保全财产。',
+      legal_concepts: ['建设工程施工合同', '工程款拖欠', '工期延误'],
+      evidence_analysis: {
+        keywords: ['合同', '签证单'],
+        strength: '中 (补强证据)',
+        description: '有合同但签证不全'
+      },
+      recommended_follow_up: '请提供更多关于工期延误的证据。',
+      status: "success",
+      urgency_level: "A级(正常)",
+      key_elements: {
+        timeline: "2023年开工，2024年完工",
+        dispute_amount: "500万",
+        contract_status: "已备案",
+        payment_status: "未付进度款"
+      },
+      user_persona: {
+        tags: ["#施工方", "#资金压力"],
+        explicit_pain: ["无法支付工人工资"],
+        implicit_needs: ["快速回款"]
+      }
+    }
+  };
+
+  const [activeView, setActiveView] = useState<ViewState>('generator');
+  const [records, setRecords] = useState<AnalysisRecord[]>([DUMMY_RECORD]);
+  const [selectedRecord, setSelectedRecord] = useState<AnalysisRecord | null>(DUMMY_RECORD);
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Manage Templates State
@@ -171,6 +210,10 @@ const App: React.FC = () => {
 
       {activeView === 'knowledge' && (
         <KnowledgeBaseView />
+      )}
+
+      {activeView === 'factAnalysis' && (
+        <FactAnalysisWorkspaceV2 />
       )}
     </Layout>
   );

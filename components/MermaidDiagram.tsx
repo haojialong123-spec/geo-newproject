@@ -28,11 +28,25 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, onSvgGenerated }
     const [svgContent, setSvgContent] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
-    const [isRendering, setIsRendering] = useState(true);
+    const [isRendering, setIsRendering] = useState(false);
+    const lastRenderedChartRef = useRef<string | null>(null);
+
+    // Stabilize callback reference to prevent dependency loop
+    const onSvgGeneratedRef = useRef(onSvgGenerated);
+    useEffect(() => {
+        onSvgGeneratedRef.current = onSvgGenerated;
+    }, [onSvgGenerated]);
 
     useEffect(() => {
         const renderChart = async () => {
             if (!chart) return;
+
+            // Bulletproof Guard: If chart hasn't changed, DO NOT RENDER
+            if (chart === lastRenderedChartRef.current) {
+                setIsRendering(false);
+                return;
+            }
+
             setIsRendering(true);
 
             try {
@@ -43,8 +57,13 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, onSvgGenerated }
                 // mermaid.render returns an object { svg: string } in newer versions
                 const { svg } = await mermaid.render(id, chart);
                 setSvgContent(svg);
-                if (onSvgGenerated) {
-                    onSvgGenerated(svg);
+
+                // Update the guard ref ONLY on success
+                lastRenderedChartRef.current = chart;
+
+                // Use ref to call callback without re-triggering effect
+                if (onSvgGeneratedRef.current) {
+                    onSvgGeneratedRef.current(svg);
                 }
             } catch (err) {
                 console.error("Mermaid render failed:", err);
@@ -55,7 +74,8 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, onSvgGenerated }
         };
 
         renderChart();
-    }, [chart, onSvgGenerated]);
+        // Remove onSvgGenerated from dependencies to stop loop
+    }, [chart]);
 
     if (error) {
         return (
@@ -71,7 +91,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, onSvgGenerated }
     return (
         <div
             ref={containerRef}
-            className="w-full min-h-[200px] overflow-x-auto flex justify-center items-center p-6 bg-white rounded-lg border border-slate-100 shadow-sm relative transition-all duration-300"
+            className="w-full h-full overflow-x-auto flex justify-center items-center p-6 bg-white rounded-lg border border-slate-100 shadow-sm relative transition-all duration-300"
         >
             {isRendering ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10">
@@ -83,4 +103,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, onSvgGenerated }
     );
 };
 
-export default MermaidDiagram;
+// Custom comparison: ONLY re-render if `chart` changes. Ignore callback prop.
+export default React.memo(MermaidDiagram, (prevProps, nextProps) => {
+    return prevProps.chart === nextProps.chart;
+});
