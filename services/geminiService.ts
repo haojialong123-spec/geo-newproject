@@ -1,4 +1,4 @@
-import { PROMPT_EXTRACTION, PROMPT_ARTICLE_GEN, PROMPT_VIDEO_GEN, PROMPT_ZHIHU_GEN, FIRM_KNOWLEDGE_BASE } from '../constants';
+import { PROMPT_EXTRACTION, PROMPT_ARTICLE_GEN, PROMPT_VIDEO_GEN, PROMPT_ZHIHU_GEN, PROMPT_HUMANIZED_ARTICLE_GEN, PROMPT_VISUAL_ARCHITECT, FIRM_KNOWLEDGE_BASE } from '../constants';
 import { ExtractionResult } from '../types';
 
 // API 配置
@@ -142,7 +142,8 @@ export const extractPainPoints = async (transcript: string): Promise<ExtractionR
     }
   } catch (error: any) {
     console.error("Gemini Extraction Error:", error);
-    throw new Error("深度法律分析失败，请检查文本内容或重试。");
+    // 透传原始错误信息，以便排查 (如 API Key 无效、网络错误等)
+    throw new Error(error.message || "深度法律分析失败，请检查文本内容或重试。");
   }
 };
 
@@ -207,4 +208,89 @@ export const generateZhihuAnswer = async (
   marketingDirection?: string
 ) => {
   return generateContentCommon(PROMPT_ZHIHU_GEN, painPoints, selectedQuotes, legalConcepts, marketingDirection);
+};
+
+/**
+ * 生成“去 AI 味”的老张风格文章
+ */
+export const generateHumanizedArticle = async (
+  painPoints: string[],
+  selectedQuotes: string[],
+  legalConcepts: string[],
+  marketingDirection?: string
+) => {
+  return generateContentCommon(PROMPT_HUMANIZED_ARTICLE_GEN, painPoints, selectedQuotes, legalConcepts, marketingDirection);
+};
+
+/**
+ * 6. 生成图片提示词 (Visual Architect)
+ */
+export const generateImagePrompts = async (
+  articleContent: string,
+  marketingDirection?: string
+): Promise<any> => {
+  let prompt = PROMPT_VISUAL_ARCHITECT.replace('{{Article_Content}}', articleContent);
+  prompt = prompt.replace('{{Marketing_Direction}}', marketingDirection || '建工纠纷');
+
+  try {
+    const responseText = await callWithFallback(prompt, 2048);
+    // Parse JSON
+    let cleanedText = responseText.trim();
+    if (cleanedText.startsWith('```')) {
+      const firstNewline = cleanedText.indexOf('\n');
+      const lastBackticks = cleanedText.lastIndexOf('```');
+      if (firstNewline !== -1 && lastBackticks > firstNewline) {
+        cleanedText = cleanedText.substring(firstNewline + 1, lastBackticks).trim();
+      }
+    }
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("Image Prompt Generation Error:", error);
+    return null;
+  }
+};
+
+/**
+ * 7. 生成实际图片 (调用 OpenAI 自定义格式接口，由 Antigravity 代理)
+ */
+export const generateImage = async (prompt: string): Promise<string> => {
+  const { apiKey, baseUrl } = getApiConfig();
+
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 60000); // 60s timeout
+
+    const response = await fetch(`${baseUrl}/v1/images/generations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey, // Antigravity expects x-api-key
+        // Standard OpenAI might expect Authorization: Bearer, but Antigravity auth is uniform
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        model: "nano-banana-pro", // Switch to Nano Banana Pro as requested
+        size: "1024x1024",
+        n: 1
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(id);
+
+    if (!response.ok) {
+      throw new Error(`Image API Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    if (data.data && data.data.length > 0 && data.data[0].url) {
+      return data.data[0].url;
+    } else if (data.data && data.data.length > 0 && data.data[0].b64_json) {
+      return `data:image/png;base64,${data.data[0].b64_json}`;
+    }
+    throw new Error("Invalid image response format");
+
+  } catch (error) {
+    console.error("Image Generation Failed:", error);
+    throw error;
+  }
 };

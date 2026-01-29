@@ -14,7 +14,7 @@ const App: React.FC = () => {
   const [records, setRecords] = useState<AnalysisRecord[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<AnalysisRecord | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  
+
   // Manage Templates State
   const [templates, setTemplates] = useState<LegalScenario[]>(INITIAL_LEGAL_SCENARIOS);
 
@@ -62,7 +62,7 @@ const App: React.FC = () => {
         setIsProcessing(false);
         return;
       }
-      
+
       extractedText = await readFileContent(file);
 
       if (!extractedText || extractedText.trim().length < 5) {
@@ -84,9 +84,9 @@ const App: React.FC = () => {
       const result: ExtractionResult = await extractPainPoints(newRecord.rawText);
 
       // 4. Update record with success
-      setRecords(prev => prev.map(rec => 
-        rec.id === newRecord.id 
-          ? { ...rec, status: 'completed', result: result } 
+      setRecords(prev => prev.map(rec =>
+        rec.id === newRecord.id
+          ? { ...rec, status: 'completed', result: result }
           : rec
       ));
 
@@ -96,15 +96,15 @@ const App: React.FC = () => {
         case_name: file.name.replace(/\.[^/.]+$/, "") || "未命名建工案件",
         pain_point: result.detected_issues?.[0]?.tag_name || "未知建工纠纷",
         triggers: result.detected_issues?.map(i => i.original_text) || [],
-        ai_logic: result.evidence_analysis 
-          ? `[${result.case_type}] 证据分析: ${result.evidence_analysis.description}` 
+        ai_logic: result.evidence_analysis
+          ? `[${result.case_type}] 证据分析: ${result.evidence_analysis.description}`
           : result.problem_summary,
         case_summary: result.problem_summary,
         follow_up: result.recommended_follow_up || "暂无建议",
         marketing_action: result.marketing_direction || "暂无建议",
         is_custom: true,
-        generated_article: "", 
-        generated_video_script: "", 
+        generated_article: "",
+        generated_video_script: "",
         created_at: new Date().toLocaleDateString('zh-CN')
       };
 
@@ -118,7 +118,7 @@ const App: React.FC = () => {
         // Better: we have the logic flow above. If error happens BEFORE record creation, we just alert.
         // If AFTER, we update.
         // Simplification: Just alert for now if reading failed.
-        return prev.map(rec => rec.fileName === file.name && rec.status === 'processing' ? {...rec, status: 'failed'} : rec);
+        return prev.map(rec => rec.fileName === file.name && rec.status === 'processing' ? { ...rec, status: 'failed' } : rec);
       });
       alert(`分析失败: ${error.message || "请检查 API Key 或文件内容"}`);
     } finally {
@@ -162,8 +162,8 @@ const App: React.FC = () => {
       )}
 
       {activeView === 'templates' && (
-        <TemplateLibrary 
-          templates={templates} 
+        <TemplateLibrary
+          templates={templates}
           onUpdate={handleUpdateTemplate}
           onDelete={handleDeleteTemplate}
         />

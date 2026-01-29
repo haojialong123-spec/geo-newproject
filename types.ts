@@ -70,5 +70,6 @@ export type ViewState = 'dashboard' | 'generator' | 'templates' | 'knowledge';
 export enum ContentType {
   ARTICLE = 'ARTICLE',
   VIDEO = 'VIDEO',
-  ZHIHU = 'ZHIHU' // New format
+  ZHIHU = 'ZHIHU',
+  HUMANIZED_ARTICLE = 'HUMANIZED_ARTICLE'
 }
