@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EvidenceUpload from './EvidenceUpload';
 import {
     FactProcessingStageV2, FileWithPreview, LegalFactExtractionOutput
@@ -17,6 +17,29 @@ const FactAnalysisWorkspaceV2: React.FC = () => {
     const [result, setResult] = useState<LegalFactExtractionOutput | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [progressMessage, setProgressMessage] = useState<string>('');
+
+    // 防护逻辑：如果 COMPLETE 状态但没有有效数据，重置到 IDLE
+    useEffect(() => {
+        if (stage === FactProcessingStageV2.COMPLETE) {
+            // 检查 result 是否有效（至少有一项数据）
+            const hasData = result && (
+                result.table_03_contracts.length > 0 ||
+                result.table_04_financials.length > 0 ||
+                result.table_05_performance.length > 0 ||
+                result.table_06_disputes.length > 0 ||
+                result.table_07_assets.length > 0 ||
+                result.entity_changes.length > 0 ||
+                result.appendix_4_amendments.length > 0 ||
+                result.table_02_background.length > 0
+            );
+
+            if (!hasData) {
+                console.warn('[FactAnalysisV2] COMPLETE 状态无有效数据，重置到 IDLE');
+                setStage(FactProcessingStageV2.IDLE);
+                setResult(null);
+            }
+        }
+    }, [stage, result]);
 
     const startAnalysis = async () => {
         if (files.length === 0) return;
@@ -95,9 +118,9 @@ const FactAnalysisWorkspaceV2: React.FC = () => {
                         className="absolute top-6 left-0 h-0.5 bg-amber-600 -z-10 transition-all duration-500 ease-out"
                         style={{
                             width: `${stage === FactProcessingStageV2.COMPLETE ? 100 :
-                                    steps.findIndex(s => s.id === stage) !== -1
-                                        ? (steps.findIndex(s => s.id === stage) / (steps.length - 1)) * 100
-                                        : 0
+                                steps.findIndex(s => s.id === stage) !== -1
+                                    ? (steps.findIndex(s => s.id === stage) / (steps.length - 1)) * 100
+                                    : 0
                                 }%`
                         }}
                     ></div>
