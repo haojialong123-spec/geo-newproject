@@ -44,15 +44,18 @@ async function callAnthropicAPI(
 ): Promise<string> {
   const { apiKey, baseUrl } = getApiConfig();
 
+  // 尝试使用 v1.5 模型以获得更好的稳定性（如果 v3 失败）
+  const actualModel = model === 'gemini-3-flash' ? 'gemini-1.5-flash' : model;
+
   const response = await fetch(`${baseUrl}/v1/messages`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01'
+      // 'anthropic-version': '2023-10-16' // 让代理决定版本，或是使用默认
     },
     body: JSON.stringify({
-      model,
+      model: actualModel,
       max_tokens: maxTokens,
       messages: [
         {
