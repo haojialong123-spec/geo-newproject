@@ -17,7 +17,10 @@ import {
 // API 配置
 const getApiConfig = () => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  const baseUrl = import.meta.env.VITE_ANTIGRAVITY_BASE_URL || 'http://127.0.0.1:8045';
+  // 在开发环境下使用 Vite Proxy 以注入 User-Agent
+  const baseUrl = import.meta.env.DEV
+    ? '/api/antigravity'
+    : (import.meta.env.VITE_ANTIGRAVITY_BASE_URL || 'http://127.0.0.1:8045');
 
   if (!apiKey) {
     throw new Error("API Key 缺失。请在 .env.local 中设置 VITE_GEMINI_API_KEY");
