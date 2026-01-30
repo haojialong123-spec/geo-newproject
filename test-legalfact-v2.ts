@@ -103,12 +103,11 @@ const DOCUMENT_ROUTER_PROMPT = `
 `;
 
 async function callAPI(prompt: string, maxTokens: number = 4096): Promise<string> {
-    const response = await fetch(`${env.VITE_ANTIGRAVITY_BASE_URL}/v1/messages`, {
+    const response = await fetch(`${env.VITE_ANTIGRAVITY_BASE_URL}/v1/chat/completions`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'x-api-key': env.VITE_GEMINI_API_KEY,
-            'anthropic-version': '2023-06-01'
+            'Authorization': `Bearer ${env.VITE_GEMINI_API_KEY}`
         },
         body: JSON.stringify({
             model: 'gemini-3-flash',
@@ -123,7 +122,15 @@ async function callAPI(prompt: string, maxTokens: number = 4096): Promise<string
     }
 
     const data = await response.json();
-    return data.content[0].text;
+    // OpenAI Format parsing
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+        return data.choices[0].message.content;
+    }
+    // Fallback Anthropic Format
+    if (data.content && data.content[0] && data.content[0].text) {
+        return data.content[0].text;
+    }
+    throw new Error('Unknown API response format');
 }
 
 function cleanJSON(response: string): any {

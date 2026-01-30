@@ -28,14 +28,14 @@ const getApiConfig = () => {
 
 // 可用的模型列表（按优先级排序）
 const AVAILABLE_MODELS = [
-  'gemini-3-pro-high',   // 优先 - 最强大
-  'gemini-3-flash',      // 备选 - 最快
+  'gemini-3-flash',      // 优先 - 配置截图明确支持
+  'gemini-3-pro-high',   // 备选
   'gemini-2.5-flash',    // 备选
-  'gemini-3-pro-low'     // 最后 - 省资源
+  'gemini-1.5-flash'     // 最后 - 兼容旧版
 ];
 
 /**
- * 使用 Anthropic Messages API 格式调用 Gemini
+ * 使用 OpenAI Chat API 格式调用 Gemini (根据用户配置截图调整)
  */
 async function callAnthropicAPI(
   model: string,
@@ -44,15 +44,14 @@ async function callAnthropicAPI(
 ): Promise<string> {
   const { apiKey, baseUrl } = getApiConfig();
 
-  // 尝试使用 v1.5 模型以获得更好的稳定性（如果 v3 失败）
-  const actualModel = model === 'gemini-3-flash' ? 'gemini-1.5-flash' : model;
+  // 根据配置截图，使用 gemini-3-flash 作为主要模型
+  const actualModel = model; // 不再重映射，直接使用传入的模型
 
-  const response = await fetch(`${baseUrl}/v1/messages`, {
+  const response = await fetch(`${baseUrl}/v1/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      // 'anthropic-version': '2023-10-16' // 让代理决定版本，或是使用默认
+      'Authorization': `Bearer ${apiKey}` // OpenAI 标准鉴权
     },
     body: JSON.stringify({
       model: actualModel,
@@ -83,12 +82,17 @@ async function callAnthropicAPI(
 
   const data = await response.json();
 
-  // Anthropic API 响应格式
-  if (!data.content || !data.content[0] || !data.content[0].text) {
-    throw new Error('API 返回了空响应');
+  // OpenAI API 响应格式解析
+  if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+    return data.choices[0].message.content;
   }
 
-  return data.content[0].text;
+  // 兼容 Anthropic 格式 (主要为了防守性编程)
+  if (data.content && data.content[0] && data.content[0].text) {
+    return data.content[0].text;
+  }
+
+  throw new Error('API 返回了空响应或未知格式');
 }
 
 /**
