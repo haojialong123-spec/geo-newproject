@@ -47,6 +47,9 @@ const EvidenceUpload: React.FC<EvidenceUploadProps> = ({ files, setFiles, disabl
         if (mimeType?.startsWith('image/')) {
             return <Image className="w-5 h-5 text-amber-600" />;
         }
+        if (mimeType?.startsWith('text/') || mimeType === 'text/plain') {
+            return <FileIcon className="w-5 h-5 text-blue-600" />;
+        }
         return <FileIcon className="w-5 h-5 text-slate-600" />;
     };
 
@@ -63,7 +66,7 @@ const EvidenceUpload: React.FC<EvidenceUploadProps> = ({ files, setFiles, disabl
                     type="file"
                     id="evidence-upload"
                     multiple
-                    accept=".pdf,image/*,.doc,.docx"
+                    accept=".pdf,image/*,.doc,.docx,.txt,text/plain"
                     className="hidden"
                     onChange={handleFileSelect}
                     disabled={disabled}
@@ -73,7 +76,7 @@ const EvidenceUpload: React.FC<EvidenceUploadProps> = ({ files, setFiles, disabl
                         <Upload className="w-8 h-8" />
                     </div>
                     <h3 className="text-lg font-semibold text-slate-800">点击上传案卷材料</h3>
-                    <p className="text-sm text-slate-500 mt-2">支持 PDF、JPG、PNG、Word 格式 (合同、支付凭证、补充协议)</p>
+                    <p className="text-sm text-slate-500 mt-2">支持 PDF、JPG、PNG、Word、TXT 格式 (合同、支付凭证、补充协议)</p>
                 </label>
             </div>
 
