@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^2.0.20",
     "@ai-sdk/openai": "^3.0.31",
     "@hello-pangea/dnd": "^18.0.1",
     "@supabase/supabase-js": "^2.97.0",

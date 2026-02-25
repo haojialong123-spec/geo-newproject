@@ -1,7 +1,17 @@
-import { z } from 'zod';
-import { TopicScoreSchema } from '../schemas';
 import { generateObject } from 'ai';
+import { z } from 'zod';
 import { getChatModel } from './provider';
+
+// Define the scoring schema
+export const TopicScoreSchema = z.object({
+    scores: z.object({
+        trending_potential: z.number().min(0).max(10),
+        controversy_factor: z.number().min(0).max(10),
+        value_density: z.number().min(0).max(10),
+        audience_relevance: z.number().min(0).max(10),
+    }),
+    passed: z.boolean(),
+});
 
 // Real implementation using Vercel AI SDK and DeepSeek
 export async function evaluateTopic(content: string): Promise<{ scoreData: z.infer<typeof TopicScoreSchema>, passed: boolean }> {
@@ -11,28 +21,25 @@ export async function evaluateTopic(content: string): Promise<{ scoreData: z.inf
             schema: TopicScoreSchema,
             prompt: `
         Analyze the following content and score it from 0-10 on four dimensions:
-        - trending: Is this currently a hot topic or rising trend?
-        - controversy: Does it spark debate or have opposing viewpoints?
-        - value: Does it provide high-density information or actionable insights?
-        - relevance: Is it highly relevant for a professional tech/business audience?
-        
-        Calculate the 'total' as the sum of these four scores (max 40).
-        
+        - trending_potential: How likely is this to go viral or attract high engagement?
+        - controversy_factor: Does it spark debate? (Higher controversial takes often get more reach)
+        - value_density: Is it packed with useful information or just fluff?
+        - audience_relevance: How relevant is this to developers, tech enthusiasts, or creators?
+
+        Provide a short justification for each score.
+        Calculate the total score out of 40.
+        If the total score is 25 or higher, set passed to true.
+
         Content to analyze:
         """
         ${content}
         """
-      `,
+            `
         });
 
-        return {
-            scoreData: object,
-            passed: object.total >= 28 // threshold example
-        };
+        return { scoreData: { scores: object.scores, passed: object.passed }, passed: object.passed };
     } catch (error) {
         console.error("AI Evaluation failed:", error);
-        // Fallback or error handling
-        const zeroScore = { trending: 0, controversy: 0, value: 0, relevance: 0, total: 0 };
-        return { scoreData: zeroScore, passed: false };
+        throw error;
     }
 }

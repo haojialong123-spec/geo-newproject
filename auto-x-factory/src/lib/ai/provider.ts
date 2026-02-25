@@ -1,9 +1,8 @@
-import { createOpenAI } from '@ai-sdk/openai';
+import { createDeepSeek } from '@ai-sdk/deepseek';
 
 // Create a custom provider pointing to DeepSeek's API
 // See: https://sdk.vercel.ai/providers/openai-compatible-providers#deepseek
-export const deepseek = createOpenAI({
-    baseURL: 'https://api.deepseek.com/v1',
+export const deepseek = createDeepSeek({
     apiKey: process.env.DEEPSEEK_API_KEY,
 });
 

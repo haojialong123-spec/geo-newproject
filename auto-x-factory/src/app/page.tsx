@@ -16,10 +16,10 @@ export default async function Home() {
 
   // Format the data into the structure expected by the Kanban board initial state
   const formattedColumns = {
-    'inbox': { id: 'inbox', title: 'Inbox (Collect)', items: [{ id: 'manual-input', type: 'inbox', title: 'Manual Input' }] as KanbanItem[] },
-    'candidates': { id: 'candidates', title: 'Candidates (Filter)', items: [] as KanbanItem[] },
-    'drafts': { id: 'drafts', title: 'Drafts (Create)', items: [] as KanbanItem[] },
-    'ready': { id: 'ready', title: 'Ready (Publish)', items: [] as KanbanItem[] }
+    'inbox': { id: 'inbox', title: '收件箱 (收集)', items: [{ id: 'manual-input', type: 'inbox', title: '手动输入' }] as KanbanItem[] },
+    'candidates': { id: 'candidates', title: '候选 (筛选)', items: [] as KanbanItem[] },
+    'drafts': { id: 'drafts', title: '草稿 (创作)', items: [] as KanbanItem[] },
+    'ready': { id: 'ready', title: '就绪 (发布)', items: [] as KanbanItem[] }
   };
 
   if (topics) {

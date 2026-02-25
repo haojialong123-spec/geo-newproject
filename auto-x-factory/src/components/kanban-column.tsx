@@ -17,7 +17,7 @@ export function KanbanColumn({ column }: { column: { id: string, title: string, 
                         {...provided.droppableProps}
                         className={`space-y-3 flex-grow overflow-y-auto p-1 transition-colors ${snapshot.isDraggingOver ? 'bg-indigo-50 border-dashed border-2' : ''}`}
                     >
-                        {column.items.length === 0 && <span className="text-sm text-gray-400 italic">Drop here...</span>}
+                        {column.items.length === 0 && <span className="text-sm text-gray-400 italic">拖拽归档至此...</span>}
                         {column.items.map((item, index) => (
                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided: DraggableProvided) => (

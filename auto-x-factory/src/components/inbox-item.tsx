@@ -22,7 +22,7 @@ export function InboxItem() {
             <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
                 <textarea
                     name="content"
-                    placeholder="Paste context here..."
+                    placeholder="在此粘贴参考内容..."
                     className="w-full p-2 border rounded resize-none"
                     rows={3}
                     required
@@ -32,18 +32,18 @@ export function InboxItem() {
                     disabled={loading}
                     className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 disabled:opacity-50"
                 >
-                    {loading ? 'Evaluating...' : 'Score with AI'}
+                    {loading ? 'AI 评估中...' : '使用 AI 智能打分'}
                 </button>
             </form>
 
             {result && (
                 <div className="mt-2 text-xs text-gray-600">
-                    <div>Success: {String(result.success)}</div>
+                    <div>处理状态: {result.success ? '成功' : '失败'}</div>
                     {result.scoreData && (
-                        <div className="mt-1">
-                            Score: {result.scoreData.total}/40
-                            <span className={result.passed ? 'text-green-600 ml-1' : 'text-red-600 ml-1'}>
-                                {result.passed ? '(Passed)' : '(Failed)'}
+                        <div className="mt-1 flex items-center">
+                            <span>综合评分: {result.scoreData.total}/40</span>
+                            <span className={result.passed ? 'text-green-600 ml-2 font-bold' : 'text-red-600 ml-2 font-bold'}>
+                                {result.passed ? '(通过)' : '(未达标)'}
                             </span>
                         </div>
                     )}
