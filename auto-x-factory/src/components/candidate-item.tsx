@@ -1,43 +1,44 @@
 'use client';
 
-import React, { useState } from 'react';
-import { buildAndReviewDrafts } from '../app/actions';
+import React from 'react';
+import type { KanbanItem } from './kanban-board';
 
-export function CandidateItem() {
-    const [loading, setLoading] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [result, setResult] = useState<any>(null);
-
-    const handleCreate = async () => {
-        setLoading(true);
-        const snippet = "The Vercel AI SDK provides a unified way to work with LLMs in React and Next.js.";
-        const res = await buildAndReviewDrafts("mock-topic-123", snippet);
-        setResult(res);
-        setLoading(false);
-    };
+export function CandidateItem({ item }: { item: KanbanItem }) {
+    const hasVariants = !!item.variants;
 
     return (
         <div className="bg-gray-50 p-3 rounded border border-gray-200 text-sm">
-            <h4 className="font-semibold mb-1">Topic: AI SDK Intro</h4>
-            <p className="text-gray-600 text-xs mb-3 line-clamp-2">
-                &quot;The Vercel AI SDK provides a unified way to work with LLMs in React and Next.js.&quot;
-            </p>
-            
-            <button 
-                onClick={handleCreate}
-                disabled={loading}
-                className="w-full bg-indigo-600 text-white px-3 py-1.5 rounded hover:bg-indigo-700 disabled:opacity-50"
-            >
-                {loading ? 'Drafting & Reviewing...' : 'Autopilot: Create & Critic'}
-            </button>
-            
-            {result && result.variants && (
-                <div className="mt-3 text-xs text-gray-700 bg-white p-2 border rounded">
-                    <div className="font-bold mb-1">Draft A ({result.scores?.[0]?.score}/10):</div>
-                    <p className="mb-2 italic">&quot;{result.variants.variant_a}&quot;</p>
-                    
-                    <div className="font-bold mb-1">Draft B ({result.scores?.[1]?.score}/10):</div>
-                    <p className="italic">&quot;{result.variants.variant_b}&quot;</p>
+            <h4 className="font-semibold mb-1 line-clamp-2" title={item.title || 'Untitled'}>
+                {item.title || 'Untitled Topic'}
+            </h4>
+
+            {item.scoreData && (
+                <div className="text-xs text-indigo-700 mb-2 font-mono bg-indigo-50 p-1 rounded inline-block">
+                    Score: {item.scoreData.total}/40
+                </div>
+            )}
+
+            {!hasVariants && (
+                <div className="text-xs text-gray-500 italic mt-2">
+                    Drag to &quot;Drafts&quot; to auto-generate content.
+                </div>
+            )}
+
+            {item.variants && (
+                <div className="mt-3 text-xs text-gray-700 bg-white p-2 border rounded shadow-inner">
+                    <div className="font-bold mb-1 text-green-700">
+                        Draft A {item.critique?.[0] ? `(${item.critique[0].score}/10)` : ''}:
+                    </div>
+                    <p className="mb-3 italic line-clamp-3" title={item.variants.variant_a}>
+                        &quot;{item.variants.variant_a}&quot;
+                    </p>
+
+                    <div className="font-bold mb-1 text-blue-700">
+                        Draft B {item.critique?.[1] ? `(${item.critique[1].score}/10)` : ''}:
+                    </div>
+                    <p className="italic line-clamp-3" title={item.variants.variant_b}>
+                        &quot;{item.variants.variant_b}&quot;
+                    </p>
                 </div>
             )}
         </div>

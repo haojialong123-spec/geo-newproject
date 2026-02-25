@@ -28,13 +28,9 @@ export function KanbanColumn({ column }: { column: { id: string, title: string, 
                                         className="mb-2"
                                     >
                                         {item.type === 'inbox' && <InboxItem />}
-                                        {item.type === 'candidate' && <CandidateItem />}
-                                        {item.type === 'draft' && (
-                                            <div className="p-3 bg-yellow-50 border rounded text-sm">
-                                                <h4 className="font-bold">Draft: {item.title}</h4>
-                                                <p>Waiting for human review...</p>
-                                            </div>
-                                        )}
+                                        {item.type === 'candidate' && <CandidateItem item={item} />}
+                                        {item.type === 'draft' && <CandidateItem item={item} />}
+                                        {item.type === 'ready' && <CandidateItem item={item} />}
                                     </div>
                                 )}
                             </Draggable>

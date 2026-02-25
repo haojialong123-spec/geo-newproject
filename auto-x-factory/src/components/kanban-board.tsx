@@ -3,25 +3,39 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { KanbanColumn } from './kanban-column';
-import { buildAndReviewDrafts } from '../app/actions';
+import { buildAndReviewDrafts, publishDraft } from '../app/actions';
 
-const initialData = {
-    columns: {
-        'inbox': { id: 'inbox', title: 'Inbox (Collect)', items: [{ id: 'item-1', type: 'inbox', title: 'New Topic Input' }] },
-        'candidates': { id: 'candidates', title: 'Candidates (Filter)', items: [{ id: 'item-2', type: 'candidate', title: 'Vercel AI SDK' }] },
-        'drafts': { id: 'drafts', title: 'Drafts (Create)', items: [] },
-        'ready': { id: 'ready', title: 'Ready (Publish)', items: [] }
-    },
-    columnOrder: ['inbox', 'candidates', 'drafts', 'ready']
+export type KanbanItem = {
+    id: string;
+    type: string;
+    title?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    scoreData?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    variants?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    critique?: any;
 };
 
-export default function KanbanBoard() {
+export type KanbanData = {
+    columns: {
+        [key: string]: { id: string; title: string; items: KanbanItem[] }
+    };
+    columnOrder: string[];
+};
+
+export default function KanbanBoard({ initialData }: { initialData: KanbanData }) {
     const [data, setData] = useState(initialData);
     const [isBrowser, setIsBrowser] = useState(false);
 
     useEffect(() => {
         setIsBrowser(true);
     }, []);
+
+    // Sync local state when server finishes Next.js revalidation
+    useEffect(() => {
+        setData(initialData);
+    }, [initialData]);
 
     const onDragEnd = async (result: DropResult) => {
         const { destination, source } = result;
@@ -65,11 +79,19 @@ export default function KanbanBoard() {
             }
         }));
 
-        // AI Logic Trigger
+        // AI Logic Trigger (Generate/Critique)
         if (source.droppableId === 'candidates' && destination.droppableId === 'drafts') {
             console.log(`Triggering buildAndReviewDrafts for ${newItem.id}`);
             // In a real app we'd pass real snippet text
-            await buildAndReviewDrafts(newItem.id, newItem.title);
+            await buildAndReviewDrafts(newItem.id, newItem.title || "Unknown Topic");
+        }
+
+        // Publishing Logic Trigger
+        if (source.droppableId === 'drafts' && destination.droppableId === 'ready') {
+            console.log(`Triggering publishDraft for ${newItem.id}`);
+            // Defaulting to sending variant_a as the final content for simplicity in UI demo
+            const contentToPublish = newItem.variants?.variant_a || "Fallback content";
+            await publishDraft(newItem.id, contentToPublish);
         }
     };
 

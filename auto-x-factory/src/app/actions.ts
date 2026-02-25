@@ -1,4 +1,5 @@
 'use server';
+import { revalidatePath } from 'next/cache';
 
 import { evaluateTopic } from '@/lib/ai/filter';
 import { generateVariants, critiqueVariants } from '@/lib/ai/create';
@@ -18,6 +19,13 @@ export async function searchAndEvaluate(formData: FormData) {
         // 3. Save to topics (Mock DB)
         const topicId = await saveTopic(materialId, content.substring(0, 50), scoreData);
 
+        if (passed) {
+            const { supabase } = await import('@/lib/db/client');
+            await supabase.from('topics').update({ status: 'candidates' }).eq('id', topicId);
+        }
+
+        revalidatePath('/'); // Refresh Kanban UI
+
         return { success: true, topicId, scoreData, passed };
     } catch (e) {
         return { success: false, error: String(e) };
@@ -32,7 +40,28 @@ export async function buildAndReviewDrafts(topicId: string, topicSnippet: string
         // 2. Critic Evaluates
         const scores = await critiqueVariants(variants.variant_a, variants.variant_b);
 
+        // Update Database to Drafts state with Variants
+        const { supabase } = await import('@/lib/db/client');
+        await supabase.from('topics').update({
+            status: 'drafts',
+            variants: variants,
+            critique: scores
+        }).eq('id', topicId);
+
+        revalidatePath('/'); // Refresh Kanban UI
         return { success: true, variants, scores };
+    } catch (e) {
+        return { success: false, error: String(e) };
+    }
+}
+
+export async function publishDraft(topicId: string, finalContent: string) {
+    try {
+        const { publishTweet } = await import('@/lib/publish/twitter');
+        const publishResult = await publishTweet(topicId, finalContent);
+
+        revalidatePath('/'); // Refresh Kanban UI
+        return { success: true, url: publishResult.fakeUrl };
     } catch (e) {
         return { success: false, error: String(e) };
     }
