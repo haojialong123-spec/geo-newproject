@@ -15,6 +15,7 @@ export async function saveMaterial(query: string, content: string, url: string):
     return data.id;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function saveTopic(materialId: string, title: string, scoreData: any): Promise<string> {
     const { data, error } = await supabase
         .from('topics')
