@@ -26,15 +26,23 @@ export function CandidateItem({ item }: { item: KanbanItem }) {
 
             {item.variants && (
                 <div className="mt-3 text-xs text-gray-700 bg-white p-2 border rounded shadow-inner">
-                    <div className="font-bold mb-1 text-green-700">
-                        草稿 A {item.critique?.[0] ? `(${item.critique[0].score}/10)` : ''}:
+                    <div className="font-bold mb-1 text-green-700 flex justify-between items-center">
+                        <span>草稿 A {item.critique?.[0] ? `(${item.critique[0].score}/10)` : ''}:</span>
+                        <button
+                            onClick={() => navigator.clipboard.writeText(item.variants.variant_a)}
+                            className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 border border-gray-300 px-2 py-0.5 rounded text-[10px] bg-gray-50 cursor-pointer transition-colors"
+                        >复制</button>
                     </div>
                     <p className="mb-3 italic line-clamp-3" title={item.variants.variant_a}>
                         &quot;{item.variants.variant_a}&quot;
                     </p>
 
-                    <div className="font-bold mb-1 text-blue-700">
-                        草稿 B {item.critique?.[1] ? `(${item.critique[1].score}/10)` : ''}:
+                    <div className="font-bold mb-1 text-blue-700 flex justify-between items-center">
+                        <span>草稿 B {item.critique?.[1] ? `(${item.critique[1].score}/10)` : ''}:</span>
+                        <button
+                            onClick={() => navigator.clipboard.writeText(item.variants.variant_b)}
+                            className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 border border-gray-300 px-2 py-0.5 rounded text-[10px] bg-gray-50 cursor-pointer transition-colors"
+                        >复制</button>
                     </div>
                     <p className="italic line-clamp-3" title={item.variants.variant_b}>
                         &quot;{item.variants.variant_b}&quot;

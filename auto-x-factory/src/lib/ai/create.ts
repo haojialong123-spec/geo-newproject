@@ -15,6 +15,7 @@ export async function generateVariants(topicData: string): Promise<z.infer<typeo
         Variant B should be slightly provocative or contrarian to spark engagement.
         
         Keep them under 280 characters each.
+        IMPORTANT: Both tweets MUST be written in Simplified Chinese (简体中文).
         
         Topic Context:
         """

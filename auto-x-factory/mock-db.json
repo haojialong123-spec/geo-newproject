@@ -254,5 +254,53 @@
     },
     "status": "candidates",
     "created_at": 1771991200451
+  },
+  {
+    "id": "mock-topic-1771991717767",
+    "material_id": "mock-material-1771991714966",
+    "title": "今天买咖啡的时候，店员小哥不小心把拿铁的拉花弄成了一个很像外星人的奇怪图案 👽☕️。本来因为周三的",
+    "score_data": {
+      "scores": {
+        "trending_potential": 5,
+        "controversy_factor": 1,
+        "value_density": 3,
+        "audience_relevance": 4
+      },
+      "passed": false
+    },
+    "status": "candidates",
+    "created_at": 1771991717768
+  },
+  {
+    "id": "mock-topic-1771991759174",
+    "material_id": "mock-material-1771991756739",
+    "title": "说个暴论：当下 AI 落地最核心的痛点，根本不是模型不够聪明，而是“隐性验证成本”高得离谱。🤯\r\n",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 7,
+        "value_density": 9,
+        "audience_relevance": 10
+      },
+      "passed": true
+    },
+    "status": "drafts",
+    "created_at": 1771991759176,
+    "variants": {
+      "variant_a": "AI's biggest hurdle isn't intelligence—it's the hidden costs of validation. Every model needs real-world testing, but verifying its reliability in complex scenarios is expensive and time-consuming. Focus on reducing these invisible barriers.",
+      "variant_b": "Forget smarter AI—the real problem is we're wasting billions on validation no one sees. Are we overcomplicating deployment with endless testing, or just avoiding the hard work of building truly robust systems?"
+    },
+    "critique": [
+      {
+        "version": "A",
+        "score": 6.5,
+        "feedback": "Hook is moderate—'hidden costs' creates intrigue but lacks urgency. Clarity is strong with a well-structured argument. Engagement loop is weak—it states a problem without inviting discussion or debate."
+      },
+      {
+        "version": "B",
+        "score": 8,
+        "feedback": "Hook is strong—'wasting billions' and a provocative question stop the scroll. Clarity is good but slightly less direct than A. Engagement loop is excellent—the rhetorical question and 'or just avoiding' framing actively encourage replies and retweets."
+      }
+    ]
   }
 ]
