@@ -27,10 +27,7 @@ export function KanbanColumn({ column }: { column: { id: string, title: string, 
                                         {...provided.dragHandleProps}
                                         className="mb-2"
                                     >
-                                        {item.type === 'inbox' && <InboxItem />}
-                                        {item.type === 'candidate' && <CandidateItem item={item} />}
-                                        {item.type === 'draft' && <CandidateItem item={item} />}
-                                        {item.type === 'ready' && <CandidateItem item={item} />}
+                                        {column.id === 'inbox' ? <InboxItem /> : <CandidateItem item={item} />}
                                     </div>
                                 )}
                             </Draggable>

@@ -1,18 +1,11 @@
 import KanbanBoard, { KanbanItem } from "@/components/kanban-board";
-import { supabase } from "@/lib/db/client";
+import { getMockTopics } from "@/lib/db/repository";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  // Fetch real topics from the database
-  const { data: topics, error } = await supabase
-    .from('topics')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error("Error fetching initial topics:", error);
-  }
+  // Fetch real topics from the database (Mocked locally via JSON file for E2E flow)
+  const topics = await getMockTopics();
 
   // Format the data into the structure expected by the Kanban board initial state
   const formattedColumns = {
@@ -23,7 +16,7 @@ export default async function Home() {
   };
 
   if (topics) {
-    topics.forEach((topic) => {
+    topics.forEach((topic: any) => {
       // Map DB status to column
       const status = topic.status as keyof typeof formattedColumns;
       if (formattedColumns[status]) {

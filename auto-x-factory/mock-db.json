@@ -1,0 +1,258 @@
+[
+  {
+    "id": "mock-topic-1771990287510",
+    "material_id": "mock-material-1771990284516",
+    "title": "The new deepseek R1 model handles logical reasonin",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 3,
+        "value_density": 6,
+        "audience_relevance": 9
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990287511
+  },
+  {
+    "id": "mock-topic-1771990356557",
+    "material_id": "mock-material-1771990353904",
+    "title": "The new deepseek R1 model handles logical reasonin",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 4,
+        "value_density": 6,
+        "audience_relevance": 9
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990356558
+  },
+  {
+    "id": "mock-topic-1771990390785",
+    "material_id": "mock-material-1771990387927",
+    "title": "OpenAI Just Released A Revolutionary New Reasoning",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 3,
+        "value_density": 6,
+        "audience_relevance": 9
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990390786
+  },
+  {
+    "id": "mock-topic-1771990413712",
+    "material_id": "mock-material-1771990410760",
+    "title": "The new deepseek R1 model handles logical reasonin",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 3,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990413713
+  },
+  {
+    "id": "mock-topic-1771990472783",
+    "material_id": "mock-material-1771990470000",
+    "title": "The new deepseek R1 model handles logical reasonin",
+    "score_data": {
+      "scores": {
+        "trending_potential": 6,
+        "controversy_factor": 3,
+        "value_density": 4,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990472783
+  },
+  {
+    "id": "mock-topic-1771990532710",
+    "material_id": "mock-material-1771990532710",
+    "title": "I'm helping my dog vibe code games",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 2,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990532711
+  },
+  {
+    "id": "mock-topic-1771990532729",
+    "material_id": "mock-material-1771990532729",
+    "title": "Show HN: Moonshine Open-Weights STT models – higher accuracy than WhisperLargev3",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 3,
+        "value_density": 9,
+        "audience_relevance": 10
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990532734
+  },
+  {
+    "id": "mock-topic-1771990532761",
+    "material_id": "mock-material-1771990532760",
+    "title": "Cell Service for the Fairly Paranoid",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 4,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990532761
+  },
+  {
+    "id": "mock-topic-1771990573558",
+    "material_id": "mock-material-1771990573558",
+    "title": "I'm helping my dog vibe code games",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 2,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990573559
+  },
+  {
+    "id": "mock-topic-1771990573564",
+    "material_id": "mock-material-1771990573564",
+    "title": "Show HN: Moonshine Open-Weights STT models – higher accuracy than WhisperLargev3",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 3,
+        "value_density": 9,
+        "audience_relevance": 10
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990573564
+  },
+  {
+    "id": "mock-topic-1771990573568",
+    "material_id": "mock-material-1771990573568",
+    "title": "Cell Service for the Fairly Paranoid",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 4,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990573569
+  },
+  {
+    "id": "mock-topic-1771990712249",
+    "material_id": "mock-material-1771990709524",
+    "title": "The new deepseek R1 model handles logical reasonin",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 6,
+        "value_density": 7,
+        "audience_relevance": 9
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771990712249
+  },
+  {
+    "id": "mock-topic-1771991200448",
+    "material_id": "mock-material-1771991200448",
+    "title": "I'm helping my dog vibe code games",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 2,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771991200449
+  },
+  {
+    "id": "mock-topic-1771991200450",
+    "material_id": "mock-material-1771991200450",
+    "title": "Show HN: Moonshine Open-Weights STT models – higher accuracy than WhisperLargev3",
+    "score_data": {
+      "scores": {
+        "trending_potential": 8,
+        "controversy_factor": 3,
+        "value_density": 9,
+        "audience_relevance": 10
+      },
+      "passed": true
+    },
+    "status": "drafts",
+    "created_at": 1771991200450,
+    "variants": {
+      "variant_a": "Open-source speech recognition just leveled up! Moonshine's new STT models outperform WhisperLargeV3 in accuracy, making high-quality transcription more accessible than ever. A win for transparency and innovation in AI.",
+      "variant_b": "WhisperLargeV3 is already outdated. Moonshine's open-weights STT models are proving that closed-source AI can't keep up with community-driven innovation. Time to rethink who leads in speech tech."
+    },
+    "critique": [
+      {
+        "version": "A",
+        "score": 7.5,
+        "feedback": "Hook is decent with 'leveled up' but lacks urgency. Message is clear about open-source advancement and accessibility. Engagement loop is weak; it states facts without prompting discussion, though 'win for transparency' could spark replies from advocates."
+      },
+      {
+        "version": "B",
+        "score": 8,
+        "feedback": "Hook is stronger with 'already outdated' creating FOMO. Message is clear about open-weights vs. closed-source competition. Engagement loop is better; 'Time to rethink who leads' invites debate and replies, potentially driving retweets from community supporters."
+      }
+    ]
+  },
+  {
+    "id": "mock-topic-1771991200451",
+    "material_id": "mock-material-1771991200451",
+    "title": "Cell Service for the Fairly Paranoid",
+    "score_data": {
+      "scores": {
+        "trending_potential": 7,
+        "controversy_factor": 4,
+        "value_density": 6,
+        "audience_relevance": 8
+      },
+      "passed": true
+    },
+    "status": "candidates",
+    "created_at": 1771991200451
+  }
+]

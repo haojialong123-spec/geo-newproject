@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 
 import { evaluateTopic } from '@/lib/ai/filter';
 import { generateVariants, critiqueVariants } from '@/lib/ai/create';
-import { saveMaterial, saveTopic } from '@/lib/db/repository';
+import { saveMaterial, saveTopic, updateMockTopic } from '@/lib/db/repository';
 
 export async function searchAndEvaluate(formData: FormData) {
     const content = formData.get('content') as string;
@@ -20,8 +20,7 @@ export async function searchAndEvaluate(formData: FormData) {
         const topicId = await saveTopic(materialId, content.substring(0, 50), scoreData);
 
         if (passed) {
-            const { supabase } = await import('@/lib/db/client');
-            await supabase.from('topics').update({ status: 'candidates' }).eq('id', topicId);
+            await updateMockTopic(topicId, { status: 'candidates' });
         }
 
         revalidatePath('/'); // Refresh Kanban UI
@@ -41,12 +40,11 @@ export async function buildAndReviewDrafts(topicId: string, topicSnippet: string
         const scores = await critiqueVariants(variants.variant_a, variants.variant_b);
 
         // Update Database to Drafts state with Variants
-        const { supabase } = await import('@/lib/db/client');
-        await supabase.from('topics').update({
+        await updateMockTopic(topicId, {
             status: 'drafts',
             variants: variants,
             critique: scores
-        }).eq('id', topicId);
+        });
 
         revalidatePath('/'); // Refresh Kanban UI
         return { success: true, variants, scores };
