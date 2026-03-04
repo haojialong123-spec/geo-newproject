@@ -7,14 +7,11 @@ export async function POST(request: Request) {
     try {
         const { question, topic_ids } = await request.json();
 
-        const topicIds = topic_ids || [process.env.GET_NOTES_TOPIC_ID || 'MJaQWmoJ'];
+        const topicIds = topic_ids || [process.env.GET_NOTES_TOPIC_ID || '20jDQgxn'];
         const selectedTopicId = topicIds[0];
 
-        // Dynamically select the API key based on the topic_id requested
-        let apiKey = process.env.GET_NOTES_API_KEY || 'RoFIneB2n7wiMuSzJYNQteDc6a3Xg4AkGo7KWuJy5TM/x5ariiGR2oXQgeTD/cSZURXVE2WB5d/ugMH/xN4EFsETNhhjf/sCwg==';
-        if (selectedTopicId === '20jDQgxn') {
-            apiKey = process.env.GET_NOTES_API_KEY_2 || '9XSbyS+JayeHx+97/sQun1i7jbkzZPtEVbjKC74S/AzqE2LFMRKhUsvA0ZpcF5zk/CJvTCiWo8c98VxjYcWjen+tqBcYSIrzr85p';
-        }
+        // Only 20jDQgxn is supported
+        let apiKey = process.env.GET_NOTES_API_KEY_2 || '9XSbyS+JayeHx+97/sQun1i7jbkzZPtEVbjKC74S/AzqE2LFMRKhUsvA0ZpcF5zk/CJvTCiWo8c98VxjYcWjen+tqBcYSIrzr85p';
 
         if (!apiKey) {
             return NextResponse.json({ error: 'Get Notes API key not configured' }, { status: 500 });

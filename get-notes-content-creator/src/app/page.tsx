@@ -16,7 +16,7 @@ export default function Home() {
 
   // State for prompt input
   const [promptText, setPromptText] = useState("请全面检索建工知识库中关于‘工程款拖欠’、‘资质挂靠风险’、‘盲目垫资’等核心痛点的高级实操解决对策。重点关注那些能让工程老板、包工头产生强烈共鸣的真实维权方法。不要只列举枯燥的法律条文，需要总结出博主们在视频中反复强烈的‘避坑关键点’，例如如何在合同签订初期规避风险，如何收集合格的证据链条用于后续索赔，以及遇到老赖发包方时的谈判和施压技巧。收集的素材必须具备强烈的实操指导意义，能够直接转化为短视频的干货建议。");
-  const [targetKnowledgeBase, setTargetKnowledgeBase] = useState("MJaQWmoJ");
+  const [targetKnowledgeBase, setTargetKnowledgeBase] = useState("20jDQgxn");
 
   // Predefined prompt categories
   const promptPresets = [
@@ -162,7 +162,6 @@ export default function Home() {
                   onChange={(e) => setTargetKnowledgeBase(e.target.value)}
                   disabled={isProcessing}
                 >
-                  <option value="MJaQWmoJ">建工领域优质短视频库 (MJaQWmoJ)</option>
                   <option value="20jDQgxn">建工法律咨询检索库 (20jDQgxn)</option>
                 </select>
               </div>
