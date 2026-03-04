@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^2.0.20",
     "@ai-sdk/openai": "^3.0.31",
+    "@ai-sdk/react": "^3.0.99",
     "ai": "^6.0.97",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
@@ -17,7 +19,8 @@
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
