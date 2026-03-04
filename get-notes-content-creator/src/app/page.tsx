@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useCompletion } from '@ai-sdk/react';
-import { Sparkles, Database, BookOpen, PenTool, Search, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Database, BookOpen, PenTool, Search, ChevronRight, CheckCircle2, Copy } from 'lucide-react';
 
 type TopicType = { id: number; title: string; reason: string };
 
@@ -215,16 +215,30 @@ export default function Home() {
 
           {/* Raw Data Accordion */}
           {(currentStep > 1 || sourceData) && (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 animate-fade-in mt-6">
-              <h3 className="text-sm font-bold text-slate-500 flex justify-between items-center cursor-pointer">
-                <span>📚 Get笔记返回报文 (Source)</span>
-                {sourceData.startsWith("[ 🚨") ? (
-                  <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded border border-red-200 font-mono">API Error</span>
-                ) : (
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded border border-green-200 font-mono">200 OK</span>
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 animate-fade-in mt-6 flex flex-col" style={{ maxHeight: '600px' }}>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-sm font-bold text-slate-500 flex items-center">
+                  <span>📚 Get笔记返回报文</span>
+                  {sourceData.startsWith("[ 🚨") ? (
+                    <span className="ml-2 text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200 font-mono">API Error</span>
+                  ) : (
+                    <span className="ml-2 text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded border border-green-200 font-mono">200 OK</span>
+                  )}
+                </h3>
+                {sourceData && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(sourceData);
+                      alert("已成功复制报文！");
+                    }}
+                    className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center gap-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                    title="复制完整报文内容"
+                  >
+                    <Copy className="w-4 h-4" /> 复制
+                  </button>
                 )}
-              </h3>
-              <div className="mt-4 text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-h-96 overflow-y-auto bg-slate-50 dark:bg-slate-900 p-3 rounded-lg font-mono whitespace-pre-wrap">
+              </div>
+              <div className="flex-1 text-xs text-slate-600 dark:text-slate-400 leading-relaxed overflow-y-auto bg-slate-50 dark:bg-slate-900 p-4 rounded-lg font-mono whitespace-pre-wrap select-all">
                 {sourceData}
               </div>
             </div>
