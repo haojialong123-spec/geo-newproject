@@ -44,6 +44,8 @@ export async function POST(request: Request) {
                 }, 5000);
 
                 let buffer = '';
+                let isThinking = false;
+                let hasStartedFinal = false;
 
                 curlProcess.stdout.on('data', (data) => {
                     buffer += data.toString('utf-8');
@@ -57,7 +59,17 @@ export async function POST(request: Request) {
                                 if (!jsonStr) continue;
                                 const parsed = JSON.parse(jsonStr);
 
-                                if ((parsed.msg_type === 1 || parsed.msg_type === 21) && parsed.data?.msg) {
+                                if (parsed.msg_type === 21 && parsed.data?.msg) {
+                                    if (!isThinking) {
+                                        controller.enqueue(new TextEncoder().encode("<think>\n"));
+                                        isThinking = true;
+                                    }
+                                    controller.enqueue(new TextEncoder().encode(parsed.data.msg));
+                                } else if (parsed.msg_type === 1 && parsed.data?.msg) {
+                                    if (isThinking && !hasStartedFinal) {
+                                        controller.enqueue(new TextEncoder().encode("\n</think>\n\n"));
+                                        hasStartedFinal = true;
+                                    }
                                     controller.enqueue(new TextEncoder().encode(parsed.data.msg));
                                 } else if (parsed.msg_type === 0 && parsed.code !== 200) {
                                     controller.enqueue(new TextEncoder().encode(`\n[API 出错: ${parsed.data?.msg || '未知错误'}]\n`));

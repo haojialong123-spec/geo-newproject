@@ -213,50 +213,82 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Raw Data Accordion */}
-          {(currentStep > 1 || sourceData) && (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 animate-fade-in mt-6 flex flex-col" style={{ maxHeight: '600px' }}>
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-bold text-slate-500 flex items-center">
-                  <span>📚 Get笔记返回报文</span>
-                  {sourceData.startsWith("[ 🚨") ? (
-                    <span className="ml-2 text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200 font-mono">API Error</span>
-                  ) : (
-                    <span className="ml-2 text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded border border-green-200 font-mono">200 OK</span>
-                  )}
-                </h3>
-                {sourceData && (
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(sourceData);
-                      alert("已成功复制报文！");
-                    }}
-                    className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors flex items-center gap-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    title="复制完整报文内容"
-                  >
-                    <Copy className="w-4 h-4" /> 复制
-                  </button>
-                )}
-              </div>
-              <div className="flex-1 text-xs text-slate-600 dark:text-slate-400 leading-relaxed overflow-y-auto bg-slate-50 dark:bg-slate-900 p-4 rounded-lg font-mono whitespace-pre-wrap select-all">
-                {sourceData}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Right Panel: Working Area */}
         <div className="col-span-12 lg:col-span-8 flex flex-col space-y-6">
 
-          {/* Step 1: Blank state */}
+          {/* Step 1: Blank state or Source Data Display */}
           {currentStep === 1 && (
-            <div className="flex-1 bg-white/50 dark:bg-slate-800/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-12 text-center min-h-[500px]">
-              <div className="w-20 h-20 bg-blue-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-sm">
-                <Search className="w-8 h-8 text-blue-500" />
+            !sourceData ? (
+              <div className="flex-1 bg-white/50 dark:bg-slate-800/50 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-12 text-center min-h-[500px]">
+                <div className="w-20 h-20 bg-blue-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                  <Search className="w-8 h-8 text-blue-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-300 mb-2">百大建工博主为您赋能</h2>
+                <p className="text-slate-500 max-w-md">左侧已绑定获取 Get 笔记 <b>建工垂类</b> 知识库。<br />点击开始，将通过 DeepSeek 深度整合 Get 笔记语料，自动为您提炼实务经验，并由主编智能体策划爆款选题。</p>
               </div>
-              <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-300 mb-2">百大建工博主为您赋能</h2>
-              <p className="text-slate-500 max-w-md">左侧已绑定获取 Get 笔记 <b>建工垂类</b> 知识库。<br />点击开始，将通过 DeepSeek 深度整合 Get 笔记语料，自动为您提炼实务经验，并由主编智能体策划爆款选题。</p>
-            </div>
+            ) : (
+              <div className="flex-1 animate-fade-in flex flex-col h-full space-y-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h2 className="text-xl font-bold flex items-center">
+                    <Database className="w-5 h-5 mr-3 text-blue-500" />
+                    深层知识抽取进度
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    {sourceData.startsWith("[ 🚨") ? (
+                      <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded border border-red-200 font-mono">API Error</span>
+                    ) : (
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded border border-green-200 font-mono">200 OK</span>
+                    )}
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(sourceData);
+                        alert("已成功复制全部报文内容！");
+                      }}
+                      className="px-3 py-1 bg-white dark:bg-slate-800 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/40 rounded-md transition-colors flex items-center gap-1.5 text-xs font-semibold focus:outline-none border border-slate-200 dark:border-slate-700"
+                      title="复制完整报文内容"
+                    >
+                      <Copy className="w-4 h-4" /> 一键复制
+                    </button>
+                  </div>
+                </div>
+
+                {(() => {
+                  const thinkMatch = sourceData.match(/<think>([\s\S]*?)(<\/think>|$)/);
+                  const thoughts = thinkMatch ? thinkMatch[1].trim() : '';
+                  const finalResult = sourceData.replace(/<think>[\s\S]*?(<\/think>|$)/, '').trim();
+
+                  return (
+                    <div className="flex flex-col flex-1 space-y-4 max-h-[700px] overflow-y-auto">
+                      {thoughts && (
+                        <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shrink-0 shadow-inner">
+                          <h3 className="text-xs font-bold text-slate-500 mb-3 flex items-center">
+                            <Sparkles className="w-4 h-4 mr-1.5 text-slate-400" />
+                            DeepSeek 深度引擎推理思考过程
+                          </h3>
+                          <div className="text-sm text-slate-400 leading-relaxed font-mono whitespace-pre-wrap select-all">
+                            {thoughts}
+                          </div>
+                        </div>
+                      )}
+
+                      {(finalResult || isProcessing) && (
+                        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 shadow-sm flex-1">
+                          <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center pb-3 border-b border-slate-100 dark:border-slate-700">
+                            📝 知识库实务内容高阶提炼
+                          </h3>
+                          <div className="text-[15px] text-slate-700 dark:text-slate-200 leading-loose whitespace-pre-wrap select-all font-sans">
+                            {finalResult || (isProcessing && !thoughts && "正在呼叫 DeepSeek 大模型深层连接...")}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
+              </div>
+            )
           )}
 
           {/* Step 2: Topics Selection */}
