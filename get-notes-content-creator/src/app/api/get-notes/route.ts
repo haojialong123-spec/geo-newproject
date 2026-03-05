@@ -53,6 +53,7 @@ export async function POST(request: Request) {
                 let buffer = '';
                 let isThinking = false;
                 let hasStartedFinal = false;
+                let chunkCount = 0;
 
                 // EdgeOne drop idle connections workaround
                 const keepAlive = setInterval(() => {
@@ -74,21 +75,32 @@ export async function POST(request: Request) {
                                     const jsonStr = line.substring(6).trim();
                                     if (!jsonStr) continue;
                                     const parsed = JSON.parse(jsonStr);
+                                    chunkCount++;
+
+                                    // Log every chunk to diagnose actual msg_type values from API
+                                    console.log(`[Get Notes] chunk #${chunkCount} msg_type=${parsed.msg_type} code=${parsed.code} preview=${String(parsed.data?.msg || '').substring(0, 60)}`);
 
                                     if (parsed.msg_type === 21 && parsed.data?.msg) {
+                                        // Thinking / reasoning content
                                         if (!isThinking) {
                                             controller.enqueue(new TextEncoder().encode("<think>\n"));
                                             isThinking = true;
                                         }
                                         controller.enqueue(new TextEncoder().encode(parsed.data.msg));
                                     } else if (parsed.msg_type === 1 && parsed.data?.msg) {
-                                        if (isThinking && !hasStartedFinal) {
-                                            controller.enqueue(new TextEncoder().encode("\n</think>\n\n"));
+                                        // Final answer content — always output regardless of isThinking state
+                                        if (!hasStartedFinal) {
+                                            if (isThinking) {
+                                                controller.enqueue(new TextEncoder().encode("\n</think>\n\n"));
+                                            }
                                             hasStartedFinal = true;
                                         }
                                         controller.enqueue(new TextEncoder().encode(parsed.data.msg));
                                     } else if (parsed.msg_type === 0 && parsed.code !== 200) {
                                         controller.enqueue(new TextEncoder().encode(`\n[API 异常: ${parsed.data?.msg || '未知错误'}]\n`));
+                                    } else if (parsed.msg_type !== 21 && parsed.msg_type !== 1 && parsed.msg_type !== 0) {
+                                        // Log unknown msg_type for debugging
+                                        console.warn(`[Get Notes] Unknown msg_type=${parsed.msg_type}, full payload:`, JSON.stringify(parsed).substring(0, 200));
                                     }
                                 } catch (e) {
                                     // ignore parse errors on incomplete chunks
@@ -96,21 +108,35 @@ export async function POST(request: Request) {
                             }
                         }
                     }
+                    console.log(`[Get Notes] Stream ended normally. Total chunks: ${chunkCount}`);
                 } catch (e: any) {
+                    console.error(`[Get Notes] Stream read error after ${chunkCount} chunks:`, e.message);
                     controller.enqueue(new TextEncoder().encode(`\n\n[ 流响应接收中断(说明：Get笔记在国内服务器方可稳定访问，若您开启了全局代理或国外节点，会导致传输被掐断): ${e.message} ]\n`));
                 } finally {
                     clearInterval(keepAlive);
+                    // Close <think> tag if we were in thinking mode but never got a final answer
                     if (isThinking && !hasStartedFinal) {
                         controller.enqueue(new TextEncoder().encode("\n</think>\n\n"));
+                        hasStartedFinal = true;
                     }
+                    // Flush any remaining data in the buffer
                     if (buffer.startsWith('data: ')) {
                         try {
                             const jsonStr = buffer.substring(6).trim();
                             if (jsonStr) {
                                 const parsed = JSON.parse(jsonStr);
+                                console.log(`[Get Notes] Flushing buffer chunk msg_type=${parsed.msg_type}`);
                                 if (parsed.msg_type === 21 && parsed.data?.msg) {
+                                    // Thinking content in buffer — close think tag after
                                     controller.enqueue(new TextEncoder().encode(parsed.data.msg));
+                                    if (!hasStartedFinal) {
+                                        controller.enqueue(new TextEncoder().encode("\n</think>\n\n"));
+                                        hasStartedFinal = true;
+                                    }
                                 } else if (parsed.msg_type === 1 && parsed.data?.msg) {
+                                    if (!hasStartedFinal && isThinking) {
+                                        controller.enqueue(new TextEncoder().encode("\n</think>\n\n"));
+                                    }
                                     controller.enqueue(new TextEncoder().encode(parsed.data.msg));
                                 }
                             }
